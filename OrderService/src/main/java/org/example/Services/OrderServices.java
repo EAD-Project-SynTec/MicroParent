@@ -6,6 +6,7 @@ import org.example.Models.Order;
 import org.example.Models.OrderItem;
 import org.example.Repository.OrderRepository;
 import org.example.client.ProductClient;
+import org.example.messaging.OrderMessageProducer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class OrderServices {
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
-
+    private final OrderMessageProducer orderMessageProducer;
 
     //post order
     public void createOrder(OrderDto orderRequest) {
@@ -29,7 +30,8 @@ public class OrderServices {
                 .dateCreated(orderRequest.getDateCreated())
                 .items(orderRequest.getItems())
                 .build();
-        orderRepository.save(order);
+        //orderRepository.save(order);
+        orderMessageProducer.sendOrderMessage(order);
     }
 
     //place order with check availability and update quantity

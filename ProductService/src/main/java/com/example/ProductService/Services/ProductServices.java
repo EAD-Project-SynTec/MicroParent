@@ -1,9 +1,11 @@
 package com.example.ProductService.Services;
 
 import com.example.ProductService.Dtos.AvailableRequest;
+import com.example.ProductService.Dtos.OrderMessage;
 import com.example.ProductService.Dtos.ProductRequestDto;
 import com.example.ProductService.Models.Product;
 import com.example.ProductService.Repository.ProductRepository;
+import com.example.ProductService.messaging.OrderMessageConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -24,7 +26,6 @@ import java.util.stream.Collectors;
 public class ProductServices {
 
     private final ProductRepository productRepository;
-
     public void createProduct(ProductRequestDto productRequestDto) {
         Product product = new Product();
         product.setName(productRequestDto.getName());
@@ -118,6 +119,10 @@ public class ProductServices {
             throw new IllegalArgumentException("Invalid sort order. Use 'asc' or 'desc'.");
         }
 
+    }
 
+    // RabbitMq Listener function
+    public void updateProductInventory(OrderMessage orderMessage){
+        System.out.println("Order created"+orderMessage.getUserId());
     }
 }
