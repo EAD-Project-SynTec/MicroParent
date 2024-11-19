@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api/user/test")
 public class TestController {
     @GetMapping("seller")
     @PreAuthorize("hasRole('SELLER')")
