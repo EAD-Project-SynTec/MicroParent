@@ -7,6 +7,7 @@ import org.example.Models.OrderItem;
 import org.example.Repository.OrderRepository;
 import org.example.client.ProductClient;
 import org.example.messaging.OrderMessageProducer;
+import org.example.messaging.OrderResponseConsumer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,16 +23,27 @@ public class OrderServices {
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
     private final OrderMessageProducer orderMessageProducer;
+    private final OrderResponseConsumer orderResponseConsumer;
 
     //post order
     public void createOrder(OrderDto orderRequest) {
-        Order order = Order.builder()
-                .userId(orderRequest.getUserId())
-                .dateCreated(orderRequest.getDateCreated())
-                .items(orderRequest.getItems())
-                .build();
-        //orderRepository.save(order);
-        orderMessageProducer.sendOrderMessage(order);
+        // Send order message to the queue
+        orderMessageProducer.sendOrderMessage(orderRequest);
+        // Receive the order response from the queue
+        OrderResponse orderResponse = orderResponseConsumer.receiveOrder();
+        // Save the order to the database if response is positive
+        if (orderResponse != null && orderResponse.isAvailable()) {
+            System.out.println("Order saved successfully: ");
+            Order order = Order.builder()
+                    .userId(orderResponse.getUserId())
+                    .dateCreated(orderResponse.getDateCreated())
+                    .items(orderResponse.getItems())
+                    .build();
+            orderRepository.save(order);
+        } else {
+            System.out.println("Order failed: " );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is failed , product is out of stock");
+        }
     }
 
     //place order with check availability and update quantity

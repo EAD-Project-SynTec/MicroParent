@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderMessageConsumer {
     private final ProductServices productServices;
-
     @RabbitListener(queues="orderQueue")
     public void consumeOrderMessage(OrderMessage orderMessage) {
         productServices.updateProductInventory(orderMessage);

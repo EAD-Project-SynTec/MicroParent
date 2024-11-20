@@ -20,14 +20,19 @@ public class RabbitMQConfiguration {
         return new Queue("orderQueue");
     }
     @Bean
+    public Queue responseQueue() {
+        return new Queue("responseQueue");
+    }
+    @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
-   @Bean
+    @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
     }
+
 
 }
