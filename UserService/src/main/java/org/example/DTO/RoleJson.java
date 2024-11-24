@@ -15,7 +15,7 @@ public class RoleJson {
             obj.put("description", "");
             obj.put("composite", false);
             obj.put("clientRole", true);
-            obj.put("containerId", "b719b0aa-059d-40c7-bee4-1c8619952e9c");
+            obj.put("containerId", "7d300385-3863-4bc6-b3c8-3218d9598fb1");
             this.mainObject.put(obj);
         } catch (org.json.JSONException e) {
             e.printStackTrace();
@@ -24,10 +24,10 @@ public class RoleJson {
 
     private String getId(String roleName){
         return switch (roleName) {
-            case "admin" -> "";
-            case "buyer" -> "ea8b14d3-cc78-444c-8cf4-54596b6ae198";
-            case "seller" -> "cd0ff57d-bbd0-4736-9ba6-8e851b944176";
-            case "courier" -> "440ee004-b546-49e7-9d94-7e105a218ea7";
+            case "admin" -> "015b8705-b544-4424-a08a-60e14d33ad42";
+            case "buyer" -> "b9b054a7-f47e-4e9a-94ff-cbc2c9f0c094";
+            case "seller" -> "189615e8-2d12-492c-adb5-086448e52f42";
+            case "courier" -> "5e21d014-9bcd-4509-9cf6-e7631436289c";
             default -> "";
         };
     }
