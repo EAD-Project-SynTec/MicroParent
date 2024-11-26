@@ -21,7 +21,7 @@ services:
         - JAR_FILE=target/*.jar
     image: ramosh99/order-service:latest
     ports:
-      - "8081:8081"
+      - "8084:8084"
     networks:
       - microservices-network
     volumes:
@@ -35,7 +35,7 @@ services:
         - JAR_FILE=target/*.jar
     image: ramosh99/product-service:latest
     ports:
-      - "8082:8082"
+      - "8081:8081"
     networks:
       - microservices-network
     volumes:
@@ -49,7 +49,7 @@ services:
         - JAR_FILE=target/*.jar
     image: ramosh99/user-service:latest
     ports:
-      - "8083:8083"
+      - "8082:8082"
     networks:
       - microservices-network
     volumes:
