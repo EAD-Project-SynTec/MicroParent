@@ -1,4 +1,14 @@
+version: '3.8'
+
 services:
+  app:
+    image: springboot-mysql-app:latest
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+      - rabbitmq
+
   rabbitmq:
     image: rabbitmq:3-management
     ports:
