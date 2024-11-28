@@ -19,7 +19,6 @@ An enterprise-grade e-commerce platform built with a microservice architecture f
 - **Message Queue**: RabbitMQ
 - **Containerization**: Docker
 - **Authentication**: JWT (JSON Web Tokens) with Role-Based Access Control (RBAC)
-- **Testing**: JUnit, Mockito
 
 ---
 
@@ -68,5 +67,5 @@ Each microservice is containerized using Docker and communicates asynchronously 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/ecommerce-app.git
+   git clone https://github.com/EAD-Project-SynTec/MicroParent.git
  
