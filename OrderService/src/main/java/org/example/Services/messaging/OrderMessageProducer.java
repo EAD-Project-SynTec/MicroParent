@@ -1,4 +1,4 @@
-package org.example.messaging;
+package org.example.Services.messaging;
 
 import lombok.RequiredArgsConstructor;
 import org.example.Dtos.OrderDto;
