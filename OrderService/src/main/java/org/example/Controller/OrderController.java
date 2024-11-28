@@ -17,12 +17,6 @@ import java.util.List;
 public class OrderController {
     private final OrderServices orderServices;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void placeOrder(@RequestBody OrderRequestDto orderRequestDto) {
-        orderServices.placeOrder(orderRequestDto);
-    }
-
     @GetMapping
     @ResponseStatus(HttpStatus.FOUND)
     public List<Order> getOrders() {
@@ -30,7 +24,7 @@ public class OrderController {
     }
 
     // create simple order
-    @PostMapping("create-order")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestBody OrderDto orderRequestDto) {
         orderServices.createOrder(orderRequestDto);
@@ -61,7 +55,6 @@ public class OrderController {
         }
     }
 
-
     // update order status via json body
     @PutMapping("/update-status")
     public ResponseEntity<String> updateOrderStatus(@RequestBody UpdateOrderStatusRequest request) {
@@ -85,7 +78,7 @@ public class OrderController {
     }
 
     // Get orders by user ID
-    @GetMapping("/getOrders/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable String userId) {
         List<Order> orders = orderServices.getOrdersByUserId(userId);
         if (orders.isEmpty()) {
@@ -95,10 +88,9 @@ public class OrderController {
     }
 
     // Get full order information by order ID (including product details)
-    @GetMapping("/getOrderDetails/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseEntity<OrderDetailsDto> getFullOrderDetails(@PathVariable String orderId) {
         OrderDetailsDto orderDetails = orderServices.getFullOrderById(orderId);
         return ResponseEntity.ok(orderDetails);
     }
-
 }
