@@ -1,4 +1,4 @@
-package com.example.ProductService.Services;
+package com.example.ProductService.Services.product;
 
 import com.example.ProductService.Models.Product;
 

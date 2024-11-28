@@ -1,21 +1,14 @@
-package com.example.ProductService.Services;
+package com.example.ProductService.Services.product;
 
 import com.example.ProductService.Dtos.*;
 import com.example.ProductService.Models.Product;
 import com.example.ProductService.Repository.ProductRepository;
-import com.example.ProductService.messaging.OrderMessageConsumer;
-import com.example.ProductService.messaging.OrderResponseProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
