@@ -20,12 +20,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/test")
-    @ResponseStatus(HttpStatus.OK)
-    public String auth(@RequestBody String data) {
-        return data+" auth success";
-    }
-
     // Get User by Email
     @GetMapping("/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {

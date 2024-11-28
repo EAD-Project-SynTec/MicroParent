@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/user/auth")
 public class AuthController {
     @Autowired
     private UserService userService;
