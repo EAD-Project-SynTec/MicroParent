@@ -4,7 +4,7 @@ import com.example.ProductService.Dtos.ReviewReplyDto;
 import com.example.ProductService.Dtos.ReviewRequest;
 import com.example.ProductService.Dtos.ReviewUpdateDto;
 import com.example.ProductService.Models.Review;
-import com.example.ProductService.Services.ReviewService;
+import com.example.ProductService.Services.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

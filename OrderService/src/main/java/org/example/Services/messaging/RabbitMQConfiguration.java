@@ -1,4 +1,4 @@
-package org.example.messaging;
+package org.example.Services.messaging;
 
 
 import org.springframework.amqp.core.Binding;
