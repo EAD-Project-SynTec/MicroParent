@@ -25,13 +25,15 @@ public class ReviewService {
     private final ProductRepository productRepository;
 
     public void createReview(ReviewRequest reviewRequest) {
-        Review review = new Review();
-        review.setComment(reviewRequest.getComment());
-        review.setProductId(reviewRequest.getProductId());
-        review.setReviewImageUrl(reviewRequest.getReviewImageUrl());
-        review.setRating(reviewRequest.getRating());
-        reviewRepository.save(review);
-        updateProductTotalReview(reviewRequest.getProductId());
+        if(reviewRequest.getRating()<=5 && reviewRequest.getRating()>=0){
+            Review review = new Review();
+            review.setComment(reviewRequest.getComment());
+            review.setProductId(reviewRequest.getProductId());
+            review.setReviewImageUrl(reviewRequest.getReviewImageUrl());
+            review.setRating(reviewRequest.getRating());
+            reviewRepository.save(review);
+            updateProductTotalReview(reviewRequest.getProductId());
+        }
     }
 
     private void updateProductTotalReview(int productId) {
