@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/cart")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ShoppingCartController {
 
     private final ShoppingCartServices shoppingCartServices;
@@ -31,7 +32,7 @@ public class ShoppingCartController {
     public ResponseEntity<?> GetCart(@RequestParam("email") String email) {
         try {
             ShoppingCart shoppingCart= shoppingCartServices.getCart(email);
-            return ResponseEntity.status(HttpStatus.FOUND).body(shoppingCart);
+            return ResponseEntity.status(HttpStatus.OK).body(shoppingCart);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
