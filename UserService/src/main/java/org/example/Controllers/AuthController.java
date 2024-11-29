@@ -28,19 +28,16 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public Mono<ResponseEntity<Object>> createUser(@RequestBody SignUpRequest user) {
+    public Mono<ResponseEntity<User>> createUser(@RequestBody SignUpRequest user) {
         return userService.createUser(user)
-                .map(userOptional -> userOptional
-                        .<ResponseEntity<Object>>map(ResponseEntity::ok)
-                        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"))
-                )
+                .map(ResponseEntity::ok)
                 .onErrorResume(e -> {
                     if (e instanceof AlreadyExistsException) {
-                        return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists"));
+                        return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body(null));
                     } else if (e instanceof InvalidFormatException) {
-                        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
+                        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null));
                     } else {
-                        return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error"));
+                        return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null));
                     }
                 });
     }

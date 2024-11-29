@@ -19,10 +19,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private AuthService authService;
+    private KeycloakAuthService authService;
 
     // Create User
-    public Mono<Optional<User>> createUser(SignUpRequest user) {
+    /*public Mono<Optional<User>> createUser(SignUpRequest user) {
         return authService.addUser(user.email, user.password, user.firstName, user.lastName, user.role)
                 .flatMap(result -> {
                     try {
@@ -42,6 +42,39 @@ public class UserService {
                     }
                 })
                 .defaultIfEmpty(Optional.empty());
+    }*/
+
+    public Mono<User> createUser(SignUpRequest user) {
+        return authService.clientLogin()
+                .flatMap(token ->
+                        authService.createUser(token, user.firstName, user.lastName, user.email, user.password)
+                        .flatMap(userId ->
+                                authService.assignRole(token, userId, user.role)
+                                        .flatMap(valid -> {
+                                            if(valid){
+                                                try{
+                                                    User savedUser = userRepository.save(SignUptoUser.convert(user));
+                                                    return Mono.just(savedUser);
+                                                } catch (Exception e) {
+                                                    return Mono.error(new RuntimeException("Unexpected error", e));
+                                                }
+                                            }else {
+                                                return Mono.error(new RuntimeException("Unexpected error"));
+                                            }
+
+                                        }
+                                )
+                )
+                )
+                .onErrorResume(e -> {
+                    if (e instanceof AlreadyExistsException) {
+                        return Mono.error(e);
+                    } else if (e instanceof InvalidFormatException) {
+                        return Mono.error(new InvalidFormatException(e.getMessage()));
+                    } else {
+                        return Mono.error(new RuntimeException("Unexpected error"));
+                    }
+                });
     }
 
     // Get User by Email
