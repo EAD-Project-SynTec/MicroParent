@@ -15,5 +15,5 @@ public class ShoppingCart {
     @Id
      private String cartId;
      private String customerEmail;
-     private List<OrderItem> orderItems;
+     private List<CartItem> cartItems;
 }
