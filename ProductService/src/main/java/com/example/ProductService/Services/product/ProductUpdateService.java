@@ -26,4 +26,15 @@ public class ProductUpdateService implements ProductUpdator {
         product.setSellerId(productRequestDto.getSellerId());
         productRepository.save(product);
     }
+
+    public void removeProduct(int productId){
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NoSuchElementException("Product not found with ID: " + productId));
+        if(!product.isDeleted()){
+            product.setDeleted(true);
+        }else{
+           throw new RuntimeException("Product is already deleted");
+        }
+        productRepository.save(product);
+    }
 }

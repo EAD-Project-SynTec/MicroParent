@@ -1,7 +1,7 @@
 package org.example.Services.orders;
 
-import org.example.Dtos.OrderDto;
+import org.example.Dtos.OrderRequestDto;
 
 public interface OrderCreator {
-    void saveOrder(OrderDto orderRequest);
+    void saveOrder(OrderRequestDto orderRequest);
 }

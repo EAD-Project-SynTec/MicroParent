@@ -17,31 +17,41 @@ public class ProductRetrieveService implements ProductRetriever {
 
     @Override
     public List<Product> getProduct() {
-        return productRepository.findAll();
+        return productRepository.findByIsDeletedFalse();
     }
 
     @Override
     public Product getProduct(int id) {
-        return productRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        // Ensure the product is not deleted
+        return productRepository.findById(id)
+                .filter(product -> !product.isDeleted())
+                .orElseThrow(() -> new NoSuchElementException("Product not found or is deleted."));
     }
 
     @Override
     public List<Product> getProduct(String category) {
-        List<Product> products = productRepository.findByCategory(category);
-        if(products.isEmpty()) {
-            throw new NoSuchElementException();
+        List<Product> products = productRepository.findByCategory(category)
+                .stream()
+                .filter(product -> !product.isDeleted())
+                .collect(Collectors.toList());
+
+        if (products.isEmpty()) {
+            throw new NoSuchElementException("No products found in this category or they are deleted.");
         }
         return products;
     }
 
     @Override
     public List<Product> getProductsByPopularity(List<Product> list) {
-        return list.stream().sorted(Comparator.comparing(Product::getPopularity).reversed()).collect(Collectors.toList());
+        return list.stream()
+                .filter(product -> !product.isDeleted())
+                .sorted(Comparator.comparing(Product::getPopularity).reversed())
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Product> getProductsByName(String name) {
-        List<Product> allProducts = productRepository.findAll();
+        List<Product> allProducts = getProduct();
         return allProducts.stream()
                 .filter(product -> product.getName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());

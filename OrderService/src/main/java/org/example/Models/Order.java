@@ -19,6 +19,7 @@ public class Order {
     @Id
     private String id;
     private String userId;
+    private String address;
     private Date dateCreated;
     private String status;
     private List<OrderItem> items;

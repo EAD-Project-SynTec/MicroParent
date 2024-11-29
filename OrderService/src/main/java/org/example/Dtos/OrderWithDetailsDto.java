@@ -13,6 +13,7 @@ import java.util.List;
 public class OrderWithDetailsDto {
     private String orderId;
     private String userId;
+    private String address;
     private Date dateCreated;
     private String status;
     private List<OrderItemDetailsDto> items;
