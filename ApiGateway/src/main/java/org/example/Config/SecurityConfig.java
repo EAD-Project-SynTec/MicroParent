@@ -15,9 +15,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -91,8 +93,10 @@ public class SecurityConfig {
                     .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
                     .bodyValue(formData)
                     .retrieve()
-                    .bodyToMono(IntrospectionResponse.class)
-                    .map(IntrospectionResponse::isActive)
+                    .bodyToMono(Map.class)
+                    .map(res -> {
+                        return res.containsKey("active") && Boolean.TRUE.equals(res.get("active"));
+                    })
                     .block();
 
             if (Boolean.TRUE.equals(isValid)) {
@@ -103,15 +107,4 @@ public class SecurityConfig {
         }
     }
 
-    private static class IntrospectionResponse {
-        private boolean active;
-
-        public boolean isActive() {
-            return active;
-        }
-
-        public void setActive(boolean active) {
-            this.active = active;
-        }
-    }
 }

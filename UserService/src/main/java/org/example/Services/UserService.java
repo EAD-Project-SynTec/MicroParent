@@ -29,7 +29,7 @@ public class UserService {
                         User savedUser = userRepository.save(SignUptoUser.convert(user));
                         return Mono.just(Optional.of(savedUser));
                     } catch (Exception e) {
-                        return Mono.error(new RuntimeException("Unexpected error", e));
+                        return Mono.error(new RuntimeException("Unexpected database error", e));
                     }
                 })
                 .onErrorResume(e -> {
