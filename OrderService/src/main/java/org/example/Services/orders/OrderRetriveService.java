@@ -29,9 +29,14 @@ public class OrderRetriveService implements OrderRetriever {
 
         List<OrderItemDto> orderItemDtos = order.getItems().stream()
                 .map(orderItem -> {
-                    var product = productDetailsService.getProductDetails(orderItem.getProductID());
-                    return new OrderItemDto(orderItem.getProductID(), product.getName(), product.getDescription(),
-                            orderItem.getQuantity(), product.getPrice(), product.getImageUrl(), product.getCategory());
+                    try {
+                        var product = productDetailsService.getProductDetails(orderItem.getProductID());
+                        return new OrderItemDto(orderItem.getProductID(), product.getName(), product.getDescription(),
+                                orderItem.getQuantity(), product.getPrice(), product.getImageUrl(), product.getCategory());
+                    } catch (Exception e) {
+                        return new OrderItemDto(orderItem.getProductID(), null, null,
+                                orderItem.getQuantity(), 0, null, null);
+                    }
                 })
                 .collect(Collectors.toList());
 
@@ -47,7 +52,6 @@ public class OrderRetriveService implements OrderRetriever {
 
     @Override
     public List<OrderWithDetailsDto> getOrderList(String userId) {
-        // Retrieve orders by userId
         List<Order> orders = orderRepository.findAll().stream()
                 .filter(order -> order.getUserId().equals(userId))
                 .toList();
@@ -67,7 +71,6 @@ public class OrderRetriveService implements OrderRetriever {
     }
 
     public List<OrderWithDetailsDto> getOrderList() {
-        // Retrieve orders by userId
         List<Order> orders = orderRepository.findAll().stream().toList();
 
         return orders.stream()
@@ -87,13 +90,10 @@ public class OrderRetriveService implements OrderRetriever {
     private OrderWithDetailsDto.OrderItemDetailsDto mapOrderItemToDetails(OrderItem orderItem) {
         Product product;
         try {
-            // Fetch product details using ProductDetailsService
             product = productDetailsService.getProductDetails(orderItem.getProductID());
         } catch (Exception e) {
-            // Log the error and set product to null
             product = null;
         }
-
         return OrderWithDetailsDto.OrderItemDetailsDto.builder()
                 .productId(orderItem.getProductID())
                 .quantity(orderItem.getQuantity())
@@ -102,7 +102,6 @@ public class OrderRetriveService implements OrderRetriever {
                 .productImageUrl(product != null ? product.getImageUrl() : null)
                 .build();
     }
-
 
     @Override
     public List<Order> getUserOrders(String userId) {
