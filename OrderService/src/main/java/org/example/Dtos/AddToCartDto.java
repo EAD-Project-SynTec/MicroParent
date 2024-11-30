@@ -14,4 +14,6 @@ public class AddToCartDto {
     private int productID;
     private int quantity;
     private double price;
+    private String imageUrl;
+    private String name;
 }
