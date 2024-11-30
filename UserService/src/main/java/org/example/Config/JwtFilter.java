@@ -48,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             JsonNode rootNode = objectMapper.readTree(payload);
             JsonNode resourceAccess = rootNode.path("resource_access");
-            JsonNode demoClient = resourceAccess.path("demoClient");
+            JsonNode demoClient = resourceAccess.path("EADclient");
             JsonNode roles = demoClient.path("roles");
 
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
