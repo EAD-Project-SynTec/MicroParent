@@ -37,8 +37,8 @@ public class OrderServices {
     }
 
     // Fetch orders by user ID
-    public List<OrderWithDetailsDto> getOrdersByUserId(String userId) {
-        return orderRetriveService.getOrderList(userId);
+    public List<Order> getOrdersByUserId(String userId) {
+        return orderRetriveService.getUserOrders(userId);
     }
 
     // Fetch orders to seller

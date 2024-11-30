@@ -24,6 +24,7 @@ public class ProductController {
     public void createProduct(@RequestBody ProductRequestDto productRequest){
         productServices.createProduct(productRequest);
     }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getAllProducts(@RequestParam String user){
@@ -78,7 +79,6 @@ public class ProductController {
     public void changeProductQuantity(@RequestBody QuantityRequest quantityRequest) {
         productServices.updateProductQuantity(quantityRequest.getId(), quantityRequest.getQuantity());
     }
-
 
     @GetMapping("/search")
     public List<Product> getProductsByName(@RequestParam String name) {
