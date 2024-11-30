@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user/test")
 public class TestController {
     @GetMapping("seller")
-    @PreAuthorize("hasRole('SELLER')")
     public String testSeller() {
         return "Test passed";
     }
