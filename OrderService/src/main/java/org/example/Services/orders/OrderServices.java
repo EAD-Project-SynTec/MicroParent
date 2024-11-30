@@ -12,28 +12,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderServices {
-
     private final OrderCreator orderCreationService;
     private final OrderMessager orderMessageService;
     private final OrderValidator orderValidationService;
     private final OrderRetriever orderRetriveService;
     private final OrderUpdator orderUpdateService;
 
-    public void createOrder(OrderDto orderRequest) {
-        // Send order message to the queue
-        orderMessageService.sendOrderMessage(orderRequest);
-        // Receive the order response from the queue
-        var response = orderMessageService.receiveOrderResponse();
-        if (response != null && response.isAvailable()) {
-            orderCreationService.saveOrder(orderRequest);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is failed , product is out of stock");
-        }
-    }
-
     public void placeOrder(OrderRequestDto orderRequest) {
-        orderValidationService.validateOrderAvailability(orderRequest);
-        //orderCreationService.saveOrder(orderRequest);
+        try {
+            orderValidationService.validateOrderAvailability(orderRequest);
+            orderCreationService.saveOrder(orderRequest);
+            orderValidationService.updateInventory(orderRequest);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public List<Order> getOrders() {
@@ -58,4 +50,18 @@ public class OrderServices {
     public OrderDetailsDto getFullOrderById(String orderId) {
         return orderRetriveService.getOrderDetails(orderId);
     }
+
+    // create order with RabbitMQ
+    public void createOrder(OrderDto orderRequest) {
+        // Send order message to the queue
+        orderMessageService.sendOrderMessage(orderRequest);
+        // Receive the order response from the queue
+        var response = orderMessageService.receiveOrderResponse();
+        if (response != null && response.isAvailable()) {
+            // orderCreationService.saveOrder(orderRequest);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is failed , product is out of stock");
+        }
+    }
+
 }

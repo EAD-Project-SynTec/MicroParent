@@ -122,7 +122,7 @@ public class AuthService{
         RoleJson jsonobj = new RoleJson(role);
         System.out.println(jsonobj.mainObject.toString());
         return webClient.post()
-                .uri(userEndpoint+"/role-mappings/clients/"+clientIdNo)
+                .uri(userEndpoint+"/"+userIdNo+"/role-mappings/clients/"+clientIdNo)
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
                 .bodyValue(jsonobj.mainObject.toString())

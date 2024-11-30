@@ -4,4 +4,5 @@ import org.example.Dtos.OrderRequestDto;
 
 public interface OrderValidator {
     void validateOrderAvailability(OrderRequestDto orderRequest);
+    void updateInventory(OrderRequestDto orderRequest);
 }

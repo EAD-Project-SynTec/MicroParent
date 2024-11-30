@@ -8,4 +8,5 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Integer>{
 
     List<Product> findByCategory(String category); //Use to retrieve product data by Product_Category
+    List<Product> findByIsDeletedFalse();
 }

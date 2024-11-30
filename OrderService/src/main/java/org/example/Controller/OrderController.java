@@ -24,11 +24,22 @@ public class OrderController {
     }
 
     // create simple order
-    @PostMapping
+    @PostMapping("create-order")
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestBody OrderDto orderRequestDto) {
         orderServices.createOrder(orderRequestDto);
     }
+
+    @PostMapping
+    public ResponseEntity<String> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
+        try {
+            orderServices.placeOrder(orderRequestDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Order created successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order creation failed: " + e.getMessage());
+        }
+    }
+
 
     // update order status via url
     @PutMapping("/{id}/status")
