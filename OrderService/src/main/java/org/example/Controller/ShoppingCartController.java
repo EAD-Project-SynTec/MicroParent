@@ -22,7 +22,7 @@ public class ShoppingCartController {
     public ResponseEntity<String> AddToCart(@RequestBody AddToCartDto addToCartDto) {
         try {
             shoppingCartServices.addToCart(addToCartDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Item added to the cart");
+            return ResponseEntity.status(HttpStatus.OK).body("Item added to the cart");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
