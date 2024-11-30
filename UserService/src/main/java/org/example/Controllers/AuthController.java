@@ -12,15 +12,13 @@ import org.example.Services.AuthService;
 import org.example.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/user/auth")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
     @Autowired
     private UserService userService;
@@ -81,11 +79,8 @@ public class AuthController {
             User updatedUser = userService.updateUser(email, userDetails);
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
-            System.out.println("Error: "+e);
+            System.out.println("Error: " + e);
             return ResponseEntity.notFound().build();
         }
     }
-
-
-
 }

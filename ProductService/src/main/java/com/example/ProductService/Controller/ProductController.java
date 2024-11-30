@@ -7,6 +7,7 @@ import com.example.ProductService.Models.Product;
 import com.example.ProductService.Services.product.ProductServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ProductController {
     public void createProduct(@RequestBody ProductRequestDto productRequest){
         productServices.createProduct(productRequest);
     }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getAllProducts(@RequestParam String user){
@@ -50,9 +52,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteProduct(@PathVariable int id){
-        productServices.deleteProductById(id);
+    public ResponseEntity<String> deleteProduct(@PathVariable int id){
+        try{
+            productServices.deleteProductById(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfully.");
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product Deletion failed: " + e.getMessage());
+        }
+
     }
 
     @PutMapping("/{id}")
@@ -72,7 +79,6 @@ public class ProductController {
     public void changeProductQuantity(@RequestBody QuantityRequest quantityRequest) {
         productServices.updateProductQuantity(quantityRequest.getId(), quantityRequest.getQuantity());
     }
-
 
     @GetMapping("/search")
     public List<Product> getProductsByName(@RequestParam String name) {

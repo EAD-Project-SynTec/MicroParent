@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderRequestDto {
     private String userId;
+    private String address;
     private Date dateCreated;
     private List<Item> items;
 
@@ -24,5 +25,6 @@ public class OrderRequestDto {
         private int productID;
         private int quantity;
         private double price;
+        private String productName;
     }
 }

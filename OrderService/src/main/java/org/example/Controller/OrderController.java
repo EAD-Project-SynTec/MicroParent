@@ -19,16 +19,27 @@ public class OrderController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.FOUND)
-    public List<OrderWithDetailsDto> getOrders() {
-        return orderServices.getAllOrders();
+    public List<Order> getOrders() {
+        return orderServices.getOrders();
     }
 
     // create simple order
-    @PostMapping
+    @PostMapping("create-order")
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestBody OrderDto orderRequestDto) {
         orderServices.createOrder(orderRequestDto);
     }
+
+    @PostMapping
+    public ResponseEntity<String> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
+        try {
+            orderServices.placeOrder(orderRequestDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Order created successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order creation failed: " + e.getMessage());
+        }
+    }
+
 
     // update order status via url
     @PutMapping("/{id}/status")
@@ -54,8 +65,8 @@ public class OrderController {
 
     // Get orders by user ID
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderWithDetailsDto>> getOrdersByUserId(@PathVariable String userId) {
-        List<OrderWithDetailsDto> orders = orderServices.getOrdersByUserId(userId);
+    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable String userId) {
+        List<Order> orders = orderServices.getOrdersByUserId(userId);
         if (orders.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

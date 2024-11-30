@@ -29,15 +29,21 @@ public class OrderRetriveService implements OrderRetriever {
 
         List<OrderItemDto> orderItemDtos = order.getItems().stream()
                 .map(orderItem -> {
-                    var product = productDetailsService.getProductDetails(orderItem.getProductID());
-                    return new OrderItemDto(orderItem.getProductID(), product.getName(), product.getDescription(),
-                            orderItem.getQuantity(), product.getPrice(), product.getImageUrl(), product.getCategory());
+                    try {
+                        var product = productDetailsService.getProductDetails(orderItem.getProductID());
+                        return new OrderItemDto(orderItem.getProductID(), product.getName(), product.getDescription(),
+                                orderItem.getQuantity(), product.getPrice(), product.getImageUrl(), product.getCategory());
+                    } catch (Exception e) {
+                        return new OrderItemDto(orderItem.getProductID(), null, null,
+                                orderItem.getQuantity(), 0, null, null);
+                    }
                 })
                 .collect(Collectors.toList());
 
         return OrderDetailsDto.builder()
                 .id(order.getId())
                 .userId(order.getUserId())
+                .address(order.getAddress())
                 .dateCreated(order.getDateCreated())
                 .status(order.getStatus())
                 .items(orderItemDtos)
@@ -46,7 +52,6 @@ public class OrderRetriveService implements OrderRetriever {
 
     @Override
     public List<OrderWithDetailsDto> getOrderList(String userId) {
-        // Retrieve orders by userId
         List<Order> orders = orderRepository.findAll().stream()
                 .filter(order -> order.getUserId().equals(userId))
                 .toList();
@@ -55,6 +60,7 @@ public class OrderRetriveService implements OrderRetriever {
                 .map(order -> OrderWithDetailsDto.builder()
                         .orderId(order.getId())
                         .userId(order.getUserId())
+                        .address(order.getAddress())
                         .dateCreated(order.getDateCreated())
                         .status(order.getStatus())
                         .items(order.getItems().stream()
@@ -65,13 +71,13 @@ public class OrderRetriveService implements OrderRetriever {
     }
 
     public List<OrderWithDetailsDto> getOrderList() {
-        // Retrieve orders by userId
         List<Order> orders = orderRepository.findAll().stream().toList();
 
         return orders.stream()
                 .map(order -> OrderWithDetailsDto.builder()
                         .orderId(order.getId())
                         .userId(order.getUserId())
+                        .address(order.getAddress())
                         .dateCreated(order.getDateCreated())
                         .status(order.getStatus())
                         .items(order.getItems().stream()
@@ -82,15 +88,18 @@ public class OrderRetriveService implements OrderRetriever {
     }
 
     private OrderWithDetailsDto.OrderItemDetailsDto mapOrderItemToDetails(OrderItem orderItem) {
-        // Fetch product details using ProductDetailsService
-        Product product = productDetailsService.getProductDetails(orderItem.getProductID());
-
+        Product product;
+        try {
+            product = productDetailsService.getProductDetails(orderItem.getProductID());
+        } catch (Exception e) {
+            product = null;
+        }
         return OrderWithDetailsDto.OrderItemDetailsDto.builder()
                 .productId(orderItem.getProductID())
                 .quantity(orderItem.getQuantity())
                 .price(orderItem.getPrice())
-                .productName(product.getName())
-                .productImageUrl(product.getImageUrl())
+                .productName(product != null ? product.getName() : null)
+                .productImageUrl(product != null ? product.getImageUrl() : null)
                 .build();
     }
 
@@ -100,7 +109,6 @@ public class OrderRetriveService implements OrderRetriever {
                 .filter(order -> order.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
-
 
     @Override
     public List<Order> getAllOrders() {

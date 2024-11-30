@@ -16,6 +16,7 @@ public class OrderDetailsDto {
 
         private String id;
         private String userId;
+        private String address;
         private Date dateCreated;
         private String status;
         private List<OrderItemDto> items;

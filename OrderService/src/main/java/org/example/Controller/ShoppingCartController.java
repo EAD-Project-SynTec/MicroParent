@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/cart")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ShoppingCartController {
 
     private final ShoppingCartServices shoppingCartServices;

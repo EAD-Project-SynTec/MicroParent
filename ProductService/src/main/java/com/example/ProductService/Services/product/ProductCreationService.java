@@ -22,6 +22,7 @@ public class ProductCreationService implements ProductCreator {
         product.setCategory(productRequestDto.getCategory());
         product.setSellerId(productRequestDto.getSellerId());
         product.setPopularity(productRequestDto.getPopularity());
+        product.setRating(0);
         productRepository.save(product);
     }
 }
