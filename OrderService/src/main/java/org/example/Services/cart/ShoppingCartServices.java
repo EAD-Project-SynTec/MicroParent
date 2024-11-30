@@ -13,6 +13,7 @@ public class ShoppingCartServices {
     final AddToCartService addToCartService;
     final GetCartService getCartService;
     final RemoveCartItemService removeCartItemService;
+    final RemoveAllItemsService removeAllItemsService;
 
     public void addToCart(AddToCartDto addToCartDto) {
         addToCartService.addToCart(addToCartDto);
@@ -24,5 +25,9 @@ public class ShoppingCartServices {
 
     public boolean removeItemFromCart(RemoveItemDto removeItemDto) {
         return removeCartItemService.removeItemFromCart(removeItemDto);
+    }
+
+    public boolean removeAllItemsFromCart(String email) {
+        return removeAllItemsService.removeAllItemsFromCart(email);
     }
 }
