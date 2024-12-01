@@ -37,7 +37,7 @@ public class ShoppingCartController {
     public ResponseEntity<?> GetCart(@RequestParam("email") String email) {
         try {
             ShoppingCart shoppingCart= shoppingCartServices.getCart(email);
-            return ResponseEntity.status(HttpStatus.FOUND).body(shoppingCart);
+            return ResponseEntity.status(HttpStatus.OK).body(shoppingCart);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input provided: " + e.getMessage());
         }catch (DataAccessException e) {
