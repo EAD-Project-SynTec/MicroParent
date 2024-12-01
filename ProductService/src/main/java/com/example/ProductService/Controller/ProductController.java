@@ -4,17 +4,17 @@ import com.example.ProductService.Dtos.AvailableRequest;
 import com.example.ProductService.Dtos.ProductRequestDto;
 import com.example.ProductService.Dtos.QuantityRequest;
 import com.example.ProductService.Models.Product;
-import com.example.ProductService.Services.ProductServices;
+import com.example.ProductService.Services.product.ProductServices;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(value ="api/v1/product" )
-@CrossOrigin
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductServices productServices;
@@ -51,9 +51,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteProduct(@PathVariable int id){
-        productServices.deleteProductById(id);
+    public ResponseEntity<String> deleteProduct(@PathVariable int id){
+        try{
+            productServices.deleteProductById(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfully.");
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product Deletion failed: " + e.getMessage());
+        }
+
     }
 
     @PutMapping("/{id}")
