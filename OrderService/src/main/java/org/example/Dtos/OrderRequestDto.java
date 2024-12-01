@@ -25,5 +25,6 @@ public class OrderRequestDto {
         private int productID;
         private int quantity;
         private double price;
+        private String productName;
     }
 }

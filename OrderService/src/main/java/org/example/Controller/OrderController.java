@@ -19,8 +19,8 @@ public class OrderController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.FOUND)
-    public List<OrderWithDetailsDto> getOrders() {
-        return orderServices.getAllOrders();
+    public List<Order> getOrders() {
+        return orderServices.getOrders();
     }
 
     // create simple order
@@ -65,8 +65,8 @@ public class OrderController {
 
     // Get orders by user ID
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderWithDetailsDto>> getOrdersByUserId(@PathVariable String userId) {
-        List<OrderWithDetailsDto> orders = orderServices.getOrdersByUserId(userId);
+    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable String userId) {
+        List<Order> orders = orderServices.getOrdersByUserId(userId);
         if (orders.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

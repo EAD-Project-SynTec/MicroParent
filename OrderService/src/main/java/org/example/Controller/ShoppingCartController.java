@@ -5,6 +5,7 @@ import org.example.Dtos.AddToCartDto;
 import org.example.Dtos.RemoveItemDto;
 import org.example.Models.ShoppingCart;
 import org.example.Services.cart.ShoppingCartServices;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,13 @@ public class ShoppingCartController {
     public ResponseEntity<String> AddToCart(@RequestBody AddToCartDto addToCartDto) {
         try {
             shoppingCartServices.addToCart(addToCartDto);
-            return ResponseEntity.status(HttpStatus.OK).body("Item added to the cart");
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CREATED).body("Item added to the cart");
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input provided: " + e.getMessage());
+        }catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database error occurred: " + e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
@@ -32,9 +37,13 @@ public class ShoppingCartController {
     public ResponseEntity<?> GetCart(@RequestParam("email") String email) {
         try {
             ShoppingCart shoppingCart= shoppingCartServices.getCart(email);
-            return ResponseEntity.status(HttpStatus.OK).body(shoppingCart);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.FOUND).body(shoppingCart);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input provided: " + e.getMessage());
+        }catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database error occurred: " + e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
@@ -48,8 +57,30 @@ public class ShoppingCartController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found in cart or cart does not exist");
             }
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input provided: " + e.getMessage());
+        }catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database error occurred: " + e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<String> RemoveAllItems(@RequestParam("email") String email) {
+        try{
+            boolean isAllRemoved = shoppingCartServices.removeAllItemsFromCart(email);
+            if (isAllRemoved) {
+                return ResponseEntity.ok("All items removed successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cart is already empty");
+            }
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input provided: " + e.getMessage());
+        }catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database error occurred: " + e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }
     

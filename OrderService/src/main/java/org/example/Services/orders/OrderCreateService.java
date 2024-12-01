@@ -23,7 +23,7 @@ public class OrderCreateService implements  OrderCreator{
                 .address(orderRequest.getAddress())
                 .dateCreated(orderRequest.getDateCreated())
                 .items(orderRequest.getItems().stream()
-                        .map(item -> new OrderItem(item.getProductID(), item.getQuantity(), item.getPrice()))
+                        .map(item -> new OrderItem(item.getProductID(), item.getQuantity(), item.getPrice() , item.getProductName()))
                         .collect(Collectors.toList()))
                 .build();
         orderRepository.save(order);
