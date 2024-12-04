@@ -1,6 +1,11 @@
 package org.example.Controllers;
 
+import org.example.DTO.EditUser;
 import org.example.DTO.LoginRequest;
+import org.example.DTO.SignUpRequest;
+import org.example.Exceptions.AlreadyExistsException;
+import org.example.Exceptions.InvalidFormatException;
+import org.example.Exceptions.NoUserException;
 import org.example.Exceptions.UnauthorizedException;
 import org.example.Models.User;
 import org.example.Services.AuthService;
@@ -9,16 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/user/auth")
 public class AuthController {
     @Autowired
     private UserService userService;
@@ -26,17 +28,27 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public Mono<ResponseEntity<User>> createUser(@RequestBody User user) {
+    public Mono<ResponseEntity<Object>> createUser(@RequestBody SignUpRequest user) {
         return userService.createUser(user)
                 .map(userOptional -> userOptional
-                        .map(ResponseEntity::ok)
-                        .orElseGet(() -> ResponseEntity.notFound().build())
-                );
+                        .<ResponseEntity<Object>>map(ResponseEntity::ok)
+                        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"))
+                )
+                .onErrorResume(e -> {
+                    if (e instanceof AlreadyExistsException) {
+                        return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists"));
+                    } else if (e instanceof InvalidFormatException) {
+                        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()));
+                    } else {
+                        return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error"));
+                    }
+                });
     }
+
 
     @PostMapping("/login")
     public Mono<ResponseEntity<String>> logUser(@RequestBody LoginRequest loginData) {
-        return authService.logUser(loginData.username, loginData.password)
+        return authService.logUser(loginData.email, loginData.password)
                 .map(ResponseEntity::ok)
                 .onErrorResume(ex -> {
                     if (ex instanceof UnauthorizedException) {
@@ -46,5 +58,34 @@ public class AuthController {
                     }
                 });
     }
+
+
+    // Update password
+    @PutMapping("/password/{email}")
+    public Mono<ResponseEntity<String>> updatePassword(@PathVariable String email) {
+        return authService.setUpdatePassword(email)
+                .map(ResponseEntity::ok)
+                .onErrorResume(ex -> {
+                    if (ex instanceof NoUserException) {
+                        return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user exists"));
+                    } else {
+                        return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error"));
+                    }
+                });
+    }
+
+    // Update User
+    @PutMapping("/{email}")
+    public ResponseEntity<User> updateUser(@PathVariable String email, @RequestBody EditUser userDetails) {
+        try {
+            User updatedUser = userService.updateUser(email, userDetails);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            System.out.println("Error: "+e);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
 }
