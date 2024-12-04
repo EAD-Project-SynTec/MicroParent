@@ -53,7 +53,7 @@ public class OrderController {
     }
 
     // Get orders by user ID
-    @GetMapping("/users/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<OrderWithDetailsDto>> getOrdersByUserId(@PathVariable String userId) {
         List<OrderWithDetailsDto> orders = orderServices.getOrdersByUserId(userId);
         if (orders.isEmpty()) {
